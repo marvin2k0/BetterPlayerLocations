@@ -1,0 +1,12 @@
+name: BetterPlayerLocations
+version: '${project.version}'
+main: org.leiers.betterplayerlocations.BetterPlayerLocationsPlugin
+api-version: '1.20'
+
+commands:
+  location:
+    description: Show location of a player
+    aliases:
+      - loc
+      - playerlocation
+      - playerloc
