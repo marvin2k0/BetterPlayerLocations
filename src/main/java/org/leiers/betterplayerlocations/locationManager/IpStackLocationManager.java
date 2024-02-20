@@ -1,33 +1,30 @@
-package org.leiers.betterplayerlocations;
+package org.leiers.betterplayerlocations.locationManager;
 
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.leiers.betterplayerlocations.exception.IpStackConnectionError;
 import org.leiers.betterplayerlocations.model.PlayerLocationInformation;
+import org.leiers.betterplayerlocations.model.responses.ApiConnectionResponse;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class LocationManager {
+public class IpStackLocationManager extends AbstractLocationManager {
     private final Map<UUID, PlayerLocationInformation> cache;
     private final String checkUrl;
     private final String apiUrl;
 
-    public LocationManager(String apiKey) {
+    public IpStackLocationManager(String apiKey) {
         this.cache = new HashMap<>();
         this.checkUrl = "http://api.ipstack.com/check?access_key=" + apiKey + "&fields=country_name";
         this.apiUrl = "http://api.ipstack.com/%s?access_key=" + apiKey + "&fields=country_name,continent_name";
     }
 
-    public void canConnect() throws IpStackConnectionError {
+    public ApiConnectionResponse canConnect() {
         try {
             final HttpResponse<String> response = performRequest(checkUrl);
             final JSONParser parser = new JSONParser();
@@ -40,18 +37,17 @@ public class LocationManager {
                     final int errorCode = Integer.parseInt(errorObject.get("code").toString());
 
                     if (errorCode == 101)
-                        throw new IpStackConnectionError("The api key specified in config.yml was not valid");
+                        return ApiConnectionResponse.INVALID_ACCESS;
                     else if (errorCode == 104)
-                        throw new IpStackConnectionError("You have reached your monthly limit of requests to ipstacks. Upgrade to premium or enter a different api key");
+                        //throw new IpStackConnectionError("You have reached your monthly limit of requests to ipstacks. Upgrade to premium or enter a different api key");
+                        return ApiConnectionResponse.REACHED_REQUEST_LIMIT;
                 }
             }
         } catch (IOException | InterruptedException | ParseException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    public void removeFromCache(Player player) {
-        this.cache.remove(player.getUniqueId());
+        return ApiConnectionResponse.SUCCESS;
     }
 
     public PlayerLocationInformation getPlayerInformation(Player player) {
@@ -78,10 +74,13 @@ public class LocationManager {
         }
     }
 
-    private HttpResponse<String> performRequest(String url) throws IOException, InterruptedException {
-        final HttpClient client = HttpClient.newBuilder().build();
-        final HttpRequest request = HttpRequest.newBuilder(URI.create(url)).build();
+    @Override
+    public Map<UUID, PlayerLocationInformation> getCache() {
+        return cache;
+    }
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    @Override
+    public String getWebsite() {
+        return "ipstack.com";
     }
 }

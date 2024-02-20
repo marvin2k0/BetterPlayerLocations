@@ -6,7 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.leiers.betterplayerlocations.commands.PlayerLocationInformationCommand;
-import org.leiers.betterplayerlocations.exception.IpStackConnectionError;
+import org.leiers.betterplayerlocations.locationManager.IpStackLocationManager;
+import org.leiers.betterplayerlocations.locationManager.LocationManager;
 
 public final class BetterPlayerLocationsPlugin extends SimplePlugin implements Listener {
     private LocationManager locationManager;
@@ -15,14 +16,12 @@ public final class BetterPlayerLocationsPlugin extends SimplePlugin implements L
     @Override
     public void loading() {
         final String apiKey = getConfig().getString("ipstack_key");
-        this.locationManager = new LocationManager(apiKey);
+        this.locationManager = new IpStackLocationManager(apiKey);
 
-        try {
-            this.locationManager.canConnect();
-            getLogger().info("Successfully connected to ipstack.com");
-        } catch (IpStackConnectionError e) {
-            getLogger().severe(e.getMessage());
-            disable = true;
+        switch (this.locationManager.canConnect()) {
+            case SUCCESS -> getLogger().info("Successfully connected to " + locationManager.getWebsite());
+            case INVALID_ACCESS -> getLogger().severe("The api key specified in config.yml was not valid");
+            // TODO: other cases
         }
     }
 
@@ -39,6 +38,6 @@ public final class BetterPlayerLocationsPlugin extends SimplePlugin implements L
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        locationManager.removeFromCache(event.getPlayer());
+        locationManager.getCache().remove(event.getPlayer().getUniqueId());
     }
 }
