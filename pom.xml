@@ -59,8 +59,8 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>leiers-public</id>
-            <url>https://repo.leiers.org/public</url>
+            <id>leiers-releases</id>
+            <url>https://repo.leiers.org/releases</url>
         </repository>
     </repositories>
 
@@ -72,9 +72,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.leiers</groupId>
-            <artifactId>leplugin</artifactId>
-            <version>LATEST</version>
+            <groupId>com.simpleminecode</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

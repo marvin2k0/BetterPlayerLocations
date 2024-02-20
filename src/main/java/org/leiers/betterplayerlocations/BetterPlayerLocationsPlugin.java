@@ -1,14 +1,14 @@
 package org.leiers.betterplayerlocations;
 
+import com.simpleminecode.api.plugin.SimplePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.leiers.betterplayerlocations.commands.PlayerLocationInformationCommand;
 import org.leiers.betterplayerlocations.exception.IpStackConnectionError;
-import org.leiers.leplugin.LePlugin;
 
-public final class BetterPlayerLocationsPlugin extends LePlugin implements Listener {
+public final class BetterPlayerLocationsPlugin extends SimplePlugin implements Listener {
     private LocationManager locationManager;
     private boolean disable = false;
 
@@ -40,15 +40,5 @@ public final class BetterPlayerLocationsPlugin extends LePlugin implements Liste
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         locationManager.removeFromCache(event.getPlayer());
-    }
-
-    @Override
-    public long getSpigotResourceId() {
-        return 0;
-    }
-
-    @Override
-    public String getSpigotDownloadLink() {
-        return null;
     }
 }
