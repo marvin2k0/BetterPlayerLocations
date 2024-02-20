@@ -1,2 +1,50 @@
-# Register for a free account at https://ipstack.com, and paste your api key here to use this plugin.
-ipstack_key: 'your_key'
+# This plugin supports multiple types of services to get ip address information.
+# All featured services are free, but vary in accuracy. Some services require you to register an account to obtain
+# your api key and some don't even need you to register. Here is an overview of the services this plugin supports and
+# what you need to do to use them:
+
+
+
+#############################################
+# +---------------------------------------+ #
+# |                                       | #
+# |      OVERVIEW OF THE IP SERVICES      | #
+# |                                       | #
+# |     Need help? -> youtube.com/test    | #
+# |                                       | #
+# +---------------------------------------+ #
+#############################################
+
+# Make sure to read the services TOS, which can be found on their websites.
+
+# - https://freeipapi.com:  This service is free to use. You don't need an account and no api key. However, it does
+#                           not have the greatest accuracy when it comes to finding cities. If you find city locations
+#                           not to be as accurate, try switching to one of the other services listed here. The free
+#                           plan is limited to 60 requests per minute.
+
+# - https://ipgeolocation.io (recommended):  This service is free to use, but requires you to register to obtain your
+#                                            free api key. The free plan is limited to 1k requests per day and 30k
+#                                            requests per month.
+
+# - https://ipstack.com:  This service is free to use, but requires you to register and verify your identity with
+#                         valid credit card information. The free plan is limited to 100 requests per month.
+
+
+
+#############################################
+# +---------------------------------------+ #
+# |                                       | #
+# |               SETTINGS                | #
+# |                                       | #
+# |     Need help? -> youtube.com/test    | #
+# |                                       | #
+# +---------------------------------------+ #
+#############################################
+
+# Define what service to use, see list above for details:
+#
+#     freeipapi.com (default) => freeipapi
+#     ipgeolocation.io => ipgeo
+#     ipstack.com => ipstack
+service: 'freeipapi'
+key: 'your_key'
