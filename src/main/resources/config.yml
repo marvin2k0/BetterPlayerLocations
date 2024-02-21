@@ -1,6 +1,6 @@
 # This plugin supports multiple types of services to get ip address information.
 # All featured services are free, but vary in accuracy. Some services require you to register an account to obtain
-# your api key and some don't even need you to register. Here is an overview of the services this plugin supports and
+# your api key and some don't even need an api key at all. Here is an overview of the services this plugin supports and
 # what you need to do to use them:
 
 
