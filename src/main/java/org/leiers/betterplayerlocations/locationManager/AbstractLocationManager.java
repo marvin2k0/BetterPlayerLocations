@@ -1,5 +1,7 @@
 package org.leiers.betterplayerlocations.locationManager;
 
+import org.bukkit.entity.Player;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,5 +14,9 @@ public abstract class AbstractLocationManager implements LocationManager {
         final HttpRequest request = HttpRequest.newBuilder(URI.create(url)).build();
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    protected String getPlayerIp(Player player) {
+        return player.getAddress().getAddress().getHostAddress();
     }
 }

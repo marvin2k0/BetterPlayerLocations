@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.leiers.betterplayerlocations.commands.PlayerLocationInformationCommand;
+import org.leiers.betterplayerlocations.locationManager.FreeIpApiLocationManager;
+import org.leiers.betterplayerlocations.locationManager.IpGeoLocationManager;
 import org.leiers.betterplayerlocations.locationManager.IpStackLocationManager;
 import org.leiers.betterplayerlocations.locationManager.LocationManager;
 
@@ -16,11 +18,20 @@ public final class BetterPlayerLocationsPlugin extends SimplePlugin implements L
     @Override
     public void loading() {
         final String apiKey = getConfig().getString("ipstack_key");
-        this.locationManager = new IpStackLocationManager(apiKey);
+        final String service = getConfig().getString("service", "freeipapi");
+
+        switch (service) {
+            case "freeipapi" -> this.locationManager = new FreeIpApiLocationManager();
+            case "ipgeo" -> this.locationManager = new IpGeoLocationManager();
+            case "ipstack" -> this.locationManager = new IpStackLocationManager(apiKey);
+        }
 
         switch (this.locationManager.canConnect()) {
             case SUCCESS -> getLogger().info("Successfully connected to " + locationManager.getWebsite());
-            case INVALID_ACCESS -> getLogger().severe("The api key specified in config.yml was not valid");
+            case INVALID_ACCESS -> {
+                disable = true;
+                getLogger().severe("The api key specified in config.yml was not valid");
+            }
             // TODO: other cases
         }
     }
@@ -33,7 +44,7 @@ public final class BetterPlayerLocationsPlugin extends SimplePlugin implements L
         }
 
         getServer().getPluginManager().registerEvents(this, this);
-        getCommand("location").setExecutor(new PlayerLocationInformationCommand(locationManager));
+        getCommand("location").setExecutor(new PlayerLocationInformationCommand(this, locationManager));
     }
 
     @EventHandler

@@ -5,15 +5,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.leiers.betterplayerlocations.locationManager.LocationManager;
 import org.leiers.betterplayerlocations.model.PlayerLocationInformation;
 
 public class PlayerLocationInformationCommand implements CommandExecutor {
     private final LocationManager locationManager;
+    private final Plugin plugin;
 
-    public PlayerLocationInformationCommand(LocationManager locationManager) {
+    public PlayerLocationInformationCommand(Plugin plugin, LocationManager locationManager) {
         this.locationManager = locationManager;
+        this.plugin = plugin;
     }
 
     @Override
@@ -30,9 +34,14 @@ public class PlayerLocationInformationCommand implements CommandExecutor {
             return true;
         }
 
-        final PlayerLocationInformation playerLocationInformation = locationManager.getPlayerInformation(player);
-        sender.sendMessage("§e" + player.getName() + " §7is from §b" + playerLocationInformation.getCountry()
-                + " §7(§b" + playerLocationInformation.getContinent() + "§7)");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                final PlayerLocationInformation playerLocationInformation = locationManager.getPlayerInformation(player);
+                sender.sendMessage("§e" + player.getName() + " §7is from §b" + playerLocationInformation.getCountry()
+                        + " §7(§b" + playerLocationInformation.getContinent() + "§7)");
+            }
+        }.runTaskAsynchronously(plugin);
 
         return true;
     }

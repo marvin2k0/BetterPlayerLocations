@@ -54,7 +54,7 @@ public class IpStackLocationManager extends AbstractLocationManager {
         if (this.cache.containsKey(player.getUniqueId()))
             return this.cache.get(player.getUniqueId());
 
-        final String ip = player.getAddress().getAddress().getHostAddress();
+        final String ip = getPlayerIp(player);
         final String url = apiUrl.formatted(ip);
 
         try {
